@@ -7,14 +7,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +44,8 @@ fun QuestionEntry(
     modifier: Modifier = Modifier,
     viewModel: QuestionsViewModel
 ) {
+    var answered by remember { mutableStateOf(false) }
+    var guessed by remember { mutableStateOf(false) }
     Scaffold(
         topBar = { QuizzicalAppTopBar() }
     ) {
@@ -84,7 +84,13 @@ fun QuestionEntry(
                 Spacer(modifier = Modifier.height(16.dp))
                 val lastAnswer = entry.answers.last()
                 for (answer in entry.answers) {
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(
+                        onClick = {
+                            answered = true
+                            if (entry.correctAnswer == answer) guessed = true
+                        },
+                        enabled = !answered,
+                    ) {
                         Text(
                             text = answer,
                             fontSize = 16.sp,
@@ -96,6 +102,25 @@ fun QuestionEntry(
                     }
                     if (answer != lastAnswer) Spacer(modifier = Modifier.height(16.dp))
                 }
+            }
+            if (answered) {
+                Text(
+                    text = if (guessed) "Correct answer!" else "Wrong answer!",
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                Text(
+                    text = "",
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
