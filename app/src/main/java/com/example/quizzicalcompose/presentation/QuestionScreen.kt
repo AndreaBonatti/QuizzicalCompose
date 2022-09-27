@@ -33,79 +33,76 @@ fun QuestionEntry(
     var answered by rememberSaveable { mutableStateOf(false) }
     var guessed by rememberSaveable { mutableStateOf(false) }
     var selectedAnswer by rememberSaveable { mutableStateOf("") }
-    Scaffold(
-        topBar = { QuizzicalAppTopBar() }
+
+    Column(
+        Modifier
+            .padding(8.dp)
     ) {
-        Column(
-            Modifier
-                .padding(8.dp)
+        Text(
+            text = "Question $questionNumber of ${viewModel.questionsList.size}".uppercase(
+                Locale.ROOT
+            ),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(Alignment.CenterVertically)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Card(
+            elevation = 4.dp,
+            modifier = modifier.weight(1f)
         ) {
             Text(
-                text = "Question $questionNumber of ${viewModel.questionsList.size}".uppercase(
-                    Locale.ROOT
-                ),
-                textAlign = TextAlign.Center,
+                text = entry.question,
                 fontSize = 20.sp,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(8.dp)
                     .wrapContentHeight(Alignment.CenterVertically)
             )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Card(
-                elevation = 4.dp,
-                modifier = modifier.weight(1f)
-            ) {
-                Text(
-                    text = entry.question,
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .wrapContentHeight(Alignment.CenterVertically)
+        Column(
+            modifier.weight(2f)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            val lastAnswer = entry.answers.last()
+            for (answer in entry.answers) {
+                AnswerEntry(
+                    answer = answer,
+                    enabled = !answered,
+                    isCorrect = entry.correctAnswer == answer,
+                    isSelected = selectedAnswer == answer,
+                    onClick = {
+                        answered = true
+                        if (entry.correctAnswer == answer) guessed = true
+                        selectedAnswer = answer
+                    }
                 )
+                if (answer != lastAnswer) Spacer(modifier = Modifier.height(16.dp))
             }
-
-            Column(
-                modifier.weight(3f)
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                val lastAnswer = entry.answers.last()
-                for (answer in entry.answers) {
-                    AnswerEntry(
-                        answer = answer,
-                        enabled = !answered,
-                        isCorrect = entry.correctAnswer == answer,
-                        isSelected = selectedAnswer == answer,
-                        onClick = {
-                            answered = true
-                            if (entry.correctAnswer == answer) guessed = true
-                            selectedAnswer = answer
-                        }
-                    )
-                    if (answer != lastAnswer) Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-            if (answered) {
-                Text(
-                    text = if (guessed) "Correct answer!" else "Wrong answer!",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                Text(
-                    text = "",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
+        }
+        if (answered) {
+            Text(
+                text = if (guessed) "Correct answer!" else "Wrong answer!",
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            Text(
+                text = "",
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

@@ -5,12 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,14 +28,25 @@ class MainActivity : ComponentActivity() {
             QuizzicalComposeTheme {
                 val viewModel = hiltViewModel<QuestionsViewModel>()
                 val isLoading = viewModel.isLoading.value
-                if (isLoading) {
-                    CircularProgressIndicator()
-                } else {
-                    QuestionEntry(
-                        entry = viewModel.questionsList[0],
-                        questionNumber = 1,
-                        viewModel = viewModel
-                    )
+                Scaffold(
+                    topBar = { QuizzicalAppTopBar() }
+                ) {
+//                    if (isLoading) {
+//                        Column(
+//                            modifier = Modifier.fillMaxSize(),
+//                            verticalArrangement = Arrangement.Center,
+//                            horizontalAlignment = Alignment.CenterHorizontally
+//                        ) {
+//                            CircularProgressIndicator()
+//                        }
+//                    } else {
+//                        QuestionEntry(
+//                            entry = viewModel.questionsList[0],
+//                            questionNumber = 1,
+//                            viewModel = viewModel
+//                        )
+//                    }
+                    HomeScreen()
                 }
             }
         }
