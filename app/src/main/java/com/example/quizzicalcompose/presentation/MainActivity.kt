@@ -5,18 +5,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.quizzicalcompose.data.remote.models.QuestionsListEntry
 import com.example.quizzicalcompose.ui.theme.QuizzicalComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,96 +33,12 @@ class MainActivity : ComponentActivity() {
                 if (isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    QuestionEntry(entry = viewModel.questionsList[0], viewModel = viewModel)
+                    QuestionEntry(
+                        entry = viewModel.questionsList[0],
+                        questionNumber = 1,
+                        viewModel = viewModel
+                    )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun QuestionEntry(
-    entry: QuestionsListEntry,
-    modifier: Modifier = Modifier,
-    viewModel: QuestionsViewModel
-) {
-    var answered by remember { mutableStateOf(false) }
-    var guessed by remember { mutableStateOf(false) }
-    Scaffold(
-        topBar = { QuizzicalAppTopBar() }
-    ) {
-        Column(
-            Modifier
-                .padding(8.dp)
-        ) {
-            Text(
-                text = "Question 1 of 5".uppercase(java.util.Locale.ROOT),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(Alignment.CenterVertically)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Card(
-                elevation = 4.dp,
-                modifier = modifier.weight(1f)
-            ) {
-                Text(
-                    text = entry.question,
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .wrapContentHeight(Alignment.CenterVertically)
-                )
-            }
-
-            Column(
-                modifier.weight(3f)
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                val lastAnswer = entry.answers.last()
-                for (answer in entry.answers) {
-                    Button(
-                        onClick = {
-                            answered = true
-                            if (entry.correctAnswer == answer) guessed = true
-                        },
-                        enabled = !answered,
-                    ) {
-                        Text(
-                            text = answer,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                    if (answer != lastAnswer) Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-            if (answered) {
-                Text(
-                    text = if (guessed) "Correct answer!" else "Wrong answer!",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                Text(
-                    text = "",
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }
