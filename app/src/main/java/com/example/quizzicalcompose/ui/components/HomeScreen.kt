@@ -1,4 +1,4 @@
-package com.example.quizzicalcompose.presentation
+package com.example.quizzicalcompose.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

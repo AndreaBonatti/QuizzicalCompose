@@ -1,4 +1,4 @@
-package com.example.quizzicalcompose.presentation
+package com.example.quizzicalcompose.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.quizzicalcompose.data.remote.models.QuestionsListEntry
-import java.util.*
+import com.example.quizzicalcompose.ui.GameViewModel
 
 /**
  * This file represent a single question
@@ -27,7 +27,11 @@ import java.util.*
 fun QuestionEntry(
     entry: QuestionsListEntry,
     questionNumber: Int,
-    viewModel: QuestionsViewModel,
+    viewModel: GameViewModel,
+    updateScore: () -> Unit,
+    skipQuestion: () -> Unit,
+    onAnswerSelected: (String) -> Unit,
+    checkUserAnswer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var answered by rememberSaveable { mutableStateOf(false) }
@@ -38,19 +42,6 @@ fun QuestionEntry(
         Modifier
             .padding(8.dp)
     ) {
-        Text(
-            text = "Question $questionNumber of ${viewModel.questionsList.size}".uppercase(
-                Locale.ROOT
-            ),
-            textAlign = TextAlign.Center,
-            fontSize = 20.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(Alignment.CenterVertically)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
         Card(
             elevation = 4.dp,
             modifier = modifier.weight(1f)
@@ -66,7 +57,7 @@ fun QuestionEntry(
         }
 
         Column(
-            modifier.weight(2f)
+            modifier = modifier.weight(2.5f)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             val lastAnswer = entry.answers.last()
@@ -78,8 +69,12 @@ fun QuestionEntry(
                     isSelected = selectedAnswer == answer,
                     onClick = {
                         answered = true
-                        if (entry.correctAnswer == answer) guessed = true
+                        if (entry.correctAnswer == answer) {
+                            guessed = true
+                        }
                         selectedAnswer = answer
+                        onAnswerSelected(selectedAnswer)
+                        checkUserAnswer()
                     }
                 )
                 if (answer != lastAnswer) Spacer(modifier = Modifier.height(16.dp))
@@ -91,7 +86,8 @@ fun QuestionEntry(
                 fontSize = 20.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .weight(1f),
                 textAlign = TextAlign.Center
             )
         } else {
@@ -100,8 +96,26 @@ fun QuestionEntry(
                 fontSize = 20.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .weight(1f),
                 textAlign = TextAlign.Center
+            )
+        }
+        Button(
+            modifier = modifier.weight(.5f),
+            onClick = {
+                skipQuestion()
+                answered = false
+            }
+        ) {
+            Text(
+                text = "SKIP",
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                textAlign = TextAlign.Center,
             )
         }
     }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Quizzical</string>
+    <string name="question_count">QUESTION %d OF %d</string>
+    <string name="score">Score: %d</string>
 </resources>
