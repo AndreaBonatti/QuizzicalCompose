@@ -88,41 +88,42 @@ class GameViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentAnswer(newAnswer: String) {
+    private fun updateCurrentAnswer(newAnswer: String) {
         currentAnswer = newAnswer
     }
 
-    fun checkUserAnswer() {
+    fun checkUserAnswer(newAnswer: String) {
+        updateCurrentAnswer(newAnswer)
         if (currentAnswer == _uiState.value.questionsList[_uiState.value.currentQuestionCount - 1].correctAnswer) {
             val updatedScore = _uiState.value.score.plus(SCORE_INCREASE)
-            nextQuestion(updatedScore)
+            updateGameScore(updatedScore)
         }
     }
 
-    fun skipQuestion() {
-        nextQuestion(_uiState.value.score)
-        // reset user answer
-        updateCurrentAnswer("")
+    fun updateGameScore(updatedScore: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                score = updatedScore
+            )
+        }
     }
 
-    fun nextQuestion(updatedScore: Int) {
+    fun nextQuestion() {
         if (_uiState.value.currentQuestionCount < QUESTIONS_NUMBER) {
             // There are other questions => go to the next one
             _uiState.update { currentState ->
                 currentState.copy(
-                    score = updatedScore,
-                    currentQuestionCount = currentState.currentQuestionCount + 1
+                    currentQuestionCount = _uiState.value.currentQuestionCount.plus(1)
                 )
             }
         } else {
             _uiState.update { currentState ->
                 currentState.copy(
-                    score = updatedScore,
                     isGameOver = true
                 )
                 //TODO go to result screen
             }
         }
-        // TODO ?updateCurrentAnswer("")
+        updateCurrentAnswer("")
     }
 }

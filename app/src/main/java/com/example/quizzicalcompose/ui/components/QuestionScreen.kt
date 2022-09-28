@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.quizzicalcompose.data.remote.models.QuestionsListEntry
-import com.example.quizzicalcompose.ui.GameViewModel
+import com.example.quizzicalcompose.util.Constants.QUESTIONS_NUMBER
 
 /**
  * This file represent a single question
@@ -27,11 +27,8 @@ import com.example.quizzicalcompose.ui.GameViewModel
 fun QuestionEntry(
     entry: QuestionsListEntry,
     questionNumber: Int,
-    viewModel: GameViewModel,
-    updateScore: () -> Unit,
-    skipQuestion: () -> Unit,
-    onAnswerSelected: (String) -> Unit,
-    checkUserAnswer: () -> Unit,
+    nextQuestion: () -> Unit,
+    checkUserAnswer: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var answered by rememberSaveable { mutableStateOf(false) }
@@ -73,8 +70,7 @@ fun QuestionEntry(
                             guessed = true
                         }
                         selectedAnswer = answer
-                        onAnswerSelected(selectedAnswer)
-                        checkUserAnswer()
+                        checkUserAnswer(selectedAnswer)
                     }
                 )
                 if (answer != lastAnswer) Spacer(modifier = Modifier.height(16.dp))
@@ -104,12 +100,13 @@ fun QuestionEntry(
         Button(
             modifier = modifier.weight(.5f),
             onClick = {
-                skipQuestion()
+                nextQuestion()
                 answered = false
-            }
+            },
+            enabled = questionNumber < QUESTIONS_NUMBER
         ) {
             Text(
-                text = "SKIP",
+                text = "NEXT QUESTION",
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 20.sp,
                 modifier = Modifier

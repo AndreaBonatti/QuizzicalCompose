@@ -24,7 +24,7 @@ import com.example.quizzicalcompose.R
 import com.example.quizzicalcompose.data.remote.models.QuestionsListEntry
 import com.example.quizzicalcompose.ui.components.QuestionEntry
 import com.example.quizzicalcompose.ui.theme.QuizzicalComposeTheme
-import com.example.quizzicalcompose.util.Constants.SCORE_INCREASE
+import com.example.quizzicalcompose.util.Constants.QUESTIONS_NUMBER
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,17 +53,14 @@ class MainActivity : ComponentActivity() {
                         ) {
                             GameStatus(
                                 questionCount = gameUiState.currentQuestionCount,
-                                questionsNumber = gameUiState.questionsNumber,
+                                questionsNumber = QUESTIONS_NUMBER,
                                 score = gameUiState.score
                             )
                             GameLayout(
                                 currentQuestion = gameUiState.questionsList[gameUiState.currentQuestionCount - 1],
-                                questionNumber = gameUiState.questionsNumber,
-                                viewModel = gameViewModel,
-                                updateScore = { gameViewModel.nextQuestion(SCORE_INCREASE) },
-                                skipQuestion = { gameViewModel.skipQuestion() },
-                                onAnswerSelected = { gameViewModel.updateCurrentAnswer(it) },
-                                checkUserAnswer = { gameViewModel.checkUserAnswer() }
+                                questionNumber = gameUiState.currentQuestionCount,
+                                nextQuestion = { gameViewModel.nextQuestion() },
+                                checkUserAnswer = { gameViewModel.checkUserAnswer(it) }
                             )
                         }
 
@@ -89,11 +86,11 @@ fun QuizzicalAppTopBar(
             modifier = Modifier
                 .size(64.dp)
                 .padding(8.dp),
-            painter = painterResource(id = com.example.quizzicalcompose.R.drawable.ic_app_logo),
+            painter = painterResource(id = R.drawable.ic_app_logo),
             contentDescription = "Quiz icons created by Freepik"
         )
         Text(
-            text = stringResource(com.example.quizzicalcompose.R.string.app_name),
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.h1
         )
     }
@@ -130,19 +127,13 @@ fun GameStatus(
 fun GameLayout(
     currentQuestion: QuestionsListEntry,
     questionNumber: Int,
-    viewModel: GameViewModel,
-    updateScore: () -> Unit,
-    skipQuestion: () -> Unit,
-    onAnswerSelected: (String) -> Unit,
-    checkUserAnswer: () -> Unit,
+    nextQuestion: () -> Unit,
+    checkUserAnswer: (String) -> Unit,
 ) {
     QuestionEntry(
         entry = currentQuestion,
         questionNumber = questionNumber,
-        viewModel = viewModel,
-        updateScore = { updateScore() },
-        skipQuestion = { skipQuestion() },
-        onAnswerSelected = onAnswerSelected,
+        nextQuestion = { nextQuestion() },
         checkUserAnswer = checkUserAnswer
     )
 }
