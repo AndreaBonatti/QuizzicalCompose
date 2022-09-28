@@ -39,6 +39,12 @@ class GameViewModel @Inject constructor(
     }
 
     fun resetGame() {
+        _uiState.value = GameUiState(
+            score = 0,
+            isGameOver = false,
+            currentQuestionCount = 1,
+            questionsList = emptyList()
+        )
         loadQuestions()
     }
 

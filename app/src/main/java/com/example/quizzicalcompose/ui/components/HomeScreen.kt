@@ -16,6 +16,7 @@ import com.example.quizzicalcompose.R
 
 @Composable
 fun HomeScreen(
+    onStartButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -40,7 +41,9 @@ fun HomeScreen(
             style = MaterialTheme.typography.body1
         )
         Spacer(modifier = Modifier.height(48.dp))
-        Button(onClick = { /*TODO*/ }) {
+        Button(
+            onClick = { onStartButtonClicked() }
+        ) {
             Text(
                 text = "Play",
                 fontSize = 20.sp,
