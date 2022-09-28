@@ -88,6 +88,8 @@ fun QuestionEntry(
                 textAlign = TextAlign.Center
             )
         } else {
+            answered = false
+            guessed = false
             Text(
                 text = "",
                 fontSize = 20.sp,
