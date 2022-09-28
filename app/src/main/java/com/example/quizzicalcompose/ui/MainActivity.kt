@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.quizzicalcompose.R
-import com.example.quizzicalcompose.data.remote.models.QuestionsListEntry
 import com.example.quizzicalcompose.ui.components.QuestionEntry
 import com.example.quizzicalcompose.ui.theme.QuizzicalComposeTheme
 import com.example.quizzicalcompose.util.Constants.QUESTIONS_NUMBER
@@ -56,14 +55,13 @@ class MainActivity : ComponentActivity() {
                                 questionsNumber = QUESTIONS_NUMBER,
                                 score = gameUiState.score
                             )
-                            GameLayout(
-                                currentQuestion = gameUiState.questionsList[gameUiState.currentQuestionCount - 1],
+                            QuestionEntry(
+                                entry = gameUiState.questionsList[gameUiState.currentQuestionCount - 1],
                                 questionNumber = gameUiState.currentQuestionCount,
                                 nextQuestion = { gameViewModel.nextQuestion() },
                                 checkUserAnswer = { gameViewModel.checkUserAnswer(it) }
                             )
                         }
-
                     }
 //                    HomeScreen()
                 }
@@ -107,7 +105,7 @@ fun GameStatus(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .size(48.dp),
+            .size(24.dp),
     ) {
         Text(
             text = stringResource(R.string.question_count, questionCount, questionsNumber),
@@ -121,19 +119,4 @@ fun GameStatus(
             fontSize = 18.sp,
         )
     }
-}
-
-@Composable
-fun GameLayout(
-    currentQuestion: QuestionsListEntry,
-    questionNumber: Int,
-    nextQuestion: () -> Unit,
-    checkUserAnswer: (String) -> Unit,
-) {
-    QuestionEntry(
-        entry = currentQuestion,
-        questionNumber = questionNumber,
-        nextQuestion = { nextQuestion() },
-        checkUserAnswer = checkUserAnswer
-    )
 }

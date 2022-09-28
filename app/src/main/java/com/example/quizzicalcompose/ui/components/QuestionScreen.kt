@@ -41,7 +41,7 @@ fun QuestionEntry(
     ) {
         Card(
             elevation = 4.dp,
-            modifier = modifier.weight(1f)
+            modifier = modifier.weight(1.5f)
         ) {
             Text(
                 text = entry.question,
@@ -82,8 +82,9 @@ fun QuestionEntry(
                 fontSize = 20.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
-                    .weight(1f),
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = 8.dp)
+                    .weight(.5f),
                 textAlign = TextAlign.Center
             )
         } else {
@@ -93,7 +94,7 @@ fun QuestionEntry(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .weight(1f),
+                    .weight(.5f),
                 textAlign = TextAlign.Center
             )
         }
