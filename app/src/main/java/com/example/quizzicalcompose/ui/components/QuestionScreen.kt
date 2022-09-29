@@ -29,6 +29,7 @@ fun QuestionEntry(
     questionNumber: Int,
     nextQuestion: () -> Unit,
     checkUserAnswer: (String) -> Unit,
+    goToResultScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var answered by rememberSaveable { mutableStateOf(false) }
@@ -100,23 +101,41 @@ fun QuestionEntry(
                 textAlign = TextAlign.Center
             )
         }
-        Button(
-            modifier = modifier.weight(.5f),
-            onClick = {
-                nextQuestion()
-                answered = false
-            },
-            enabled = questionNumber < QUESTIONS_NUMBER
-        ) {
-            Text(
-                text = "NEXT QUESTION",
-                color = MaterialTheme.colors.onPrimary,
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                textAlign = TextAlign.Center,
-            )
+        if(questionNumber < QUESTIONS_NUMBER){
+            Button(
+                modifier = modifier.weight(.5f),
+                onClick = {
+                    nextQuestion()
+                    answered = false
+                }
+            ) {
+                Text(
+                    text = "NEXT QUESTION",
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+            Button(
+                modifier = modifier.weight(.5f),
+                onClick = {
+                    goToResultScreen()
+                }
+            ) {
+                Text(
+                    text = "RESULT",
+                    color = MaterialTheme.colors.onPrimary,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.quizzicalcompose.R
 import com.example.quizzicalcompose.ui.components.HomeScreen
 import com.example.quizzicalcompose.ui.components.QuestionEntry
+import com.example.quizzicalcompose.ui.components.ResultScreen
 import com.example.quizzicalcompose.util.Constants
 
 // Navigation destinations
@@ -60,7 +61,9 @@ fun QuizzicalApp(
                 HomeScreen(
                     onStartButtonClicked = {
                         gameViewModel.resetGame()
-                        navController.navigate(QuizzicalApp.Game.name)
+                        navController.navigate(QuizzicalApp.Game.name){
+                            popUpTo(QuizzicalApp.Start.name) { inclusive = true }
+                        }
                     }
                 )
             }
@@ -86,13 +89,23 @@ fun QuizzicalApp(
                             entry = gameUiState.questionsList[gameUiState.currentQuestionCount - 1],
                             questionNumber = gameUiState.currentQuestionCount,
                             nextQuestion = { gameViewModel.nextQuestion() },
-                            checkUserAnswer = { gameViewModel.checkUserAnswer(it) }
+                            checkUserAnswer = { gameViewModel.checkUserAnswer(it) },
+                            goToResultScreen = { navController.navigate(QuizzicalApp.Result.name){
+                                popUpTo(QuizzicalApp.Game.name) { inclusive = true }
+                            } }
                         )
                     }
                 }
             }
             composable(QuizzicalApp.Result.name) {
-
+                ResultScreen(
+                    finalScore = gameUiState.score,
+                    goToStartScreen = {
+                        navController.navigate(QuizzicalApp.Start.name) {
+                            popUpTo(QuizzicalApp.Start.name) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
