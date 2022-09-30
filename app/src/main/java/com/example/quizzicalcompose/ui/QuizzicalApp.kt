@@ -60,7 +60,6 @@ fun QuizzicalApp(
             composable(QuizzicalApp.Start.name) {
                 HomeScreen(
                     onStartButtonClicked = {
-                        gameViewModel.resetGame()
                         navController.navigate(QuizzicalApp.Game.name){
                             popUpTo(QuizzicalApp.Start.name) { inclusive = true }
                         }
@@ -103,6 +102,7 @@ fun QuizzicalApp(
                     goToStartScreen = {
                         navController.navigate(QuizzicalApp.Start.name) {
                             popUpTo(QuizzicalApp.Result.name) { inclusive = true }
+                            gameViewModel.resetGame()
                         }
                     }
                 )
