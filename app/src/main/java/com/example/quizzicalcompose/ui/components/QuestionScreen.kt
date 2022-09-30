@@ -2,15 +2,14 @@ package com.example.quizzicalcompose.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.quizzicalcompose.data.remote.models.QuestionsListEntry
@@ -35,6 +34,9 @@ fun QuestionEntry(
     var answered by rememberSaveable { mutableStateOf(false) }
     var guessed by rememberSaveable { mutableStateOf(false) }
     var selectedAnswer by rememberSaveable { mutableStateOf("") }
+    val initialTextStyle = MaterialTheme.typography.h6
+    var textStyle by remember { mutableStateOf(initialTextStyle) }
+    var readyToDraw by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -47,10 +49,22 @@ fun QuestionEntry(
             Text(
                 text = entry.question,
                 fontSize = 20.sp,
+                style = textStyle,
+                overflow = TextOverflow.Clip,
+                onTextLayout = { textLayoutResult ->
+                    if (textLayoutResult.didOverflowHeight) {
+                        textStyle = textStyle.copy(fontSize = textStyle.fontSize * 0.9)
+                    } else {
+                        readyToDraw = true
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
                     .wrapContentHeight(Alignment.CenterVertically)
+                    .drawWithContent {
+                        if (readyToDraw) drawContent()
+                    }
             )
         }
 
@@ -101,7 +115,7 @@ fun QuestionEntry(
                 textAlign = TextAlign.Center
             )
         }
-        if(questionNumber < QUESTIONS_NUMBER){
+        if (questionNumber < QUESTIONS_NUMBER) {
             Button(
                 modifier = modifier.weight(.5f),
                 onClick = {
@@ -149,6 +163,9 @@ fun AnswerEntry(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val initialTextStyle = MaterialTheme.typography.body1
+    var textStyle by remember { mutableStateOf(initialTextStyle) }
+    var readyToDraw by remember { mutableStateOf(false) }
     Button(
         onClick = { onClick() },
         enabled = enabled,
@@ -165,10 +182,24 @@ fun AnswerEntry(
         Text(
             text = answer,
             color = MaterialTheme.colors.onPrimary,
-            fontSize = 16.sp,
+            style = textStyle,
+            maxLines = 1,
+            softWrap = false,
+            onTextLayout = { textLayoutResult ->
+                if (textLayoutResult.didOverflowWidth) {
+                    textStyle = textStyle.copy(fontSize = textStyle.fontSize * 0.9)
+                } else {
+                    readyToDraw = true
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(8.dp)
+                .drawWithContent {
+                    if (readyToDraw) {
+                        drawContent()
+                    }
+                },
             textAlign = TextAlign.Center,
         )
     }

@@ -102,7 +102,7 @@ fun QuizzicalApp(
                     finalScore = gameUiState.score,
                     goToStartScreen = {
                         navController.navigate(QuizzicalApp.Start.name) {
-                            popUpTo(QuizzicalApp.Start.name) { inclusive = true }
+                            popUpTo(QuizzicalApp.Result.name) { inclusive = true }
                         }
                     }
                 )
